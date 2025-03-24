@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: pose-estimation-api
+    env: python
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+
+  - type: web
+    name: pose-estimation-frontend
+    env: python
+    buildCommand: cd frontend && pip install -r requirements.txt
+    startCommand: cd frontend && streamlit run app.py
+    envVars:
+      - key: API_URL
+        fromService:
+          name: pose-estimation-api
+          type: web
+          property: url
+      - key: PYTHON_VERSION
+        value: 3.9.0
